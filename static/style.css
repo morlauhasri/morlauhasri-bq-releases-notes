@@ -448,8 +448,8 @@ body {
 @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal {
-  background: #161b22;
-  border: 1px solid #30363d;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 28px;
   width: 100%;
@@ -598,6 +598,262 @@ body {
   transition: background var(--transition), border-color var(--transition), transform var(--transition);
 }
 .btn-tweet:hover { background: #111; border-color: #666; transform: translateY(-1px); }
+
+/* Card actions (Copy & Share) layout */
+.card-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Copy Card Button */
+.copy-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+}
+.copy-card-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+.copy-card-btn:active {
+  transform: translateY(0);
+}
+.copy-card-btn.copied {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(52, 168, 83, 0.1);
+}
+
+/* Export CSV Button (Header) */
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.export-btn:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.export-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.export-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--border);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  color: var(--accent-blue);
+}
+.theme-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.theme-toggle-btn .sun-icon {
+  display: none;
+}
+.theme-toggle-btn .moon-icon {
+  display: block;
+}
+
+/* Light Mode Variables & Overrides */
+body.light-mode {
+  --bg:            #f6f8fa;
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f3f4f6;
+  --border:        #d0d7de;
+  --border-hover:  #afb8c1;
+  --text-primary:  #24292f;
+  --text-muted:    #57606a;
+  --text-dim:      #6e7781;
+  --shadow-card: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+  --shadow-modal:0 24px 64px rgba(0,0,0,.15);
+}
+
+body.light-mode .theme-toggle-btn .sun-icon {
+  display: block;
+  color: var(--accent-yellow);
+}
+body.light-mode .theme-toggle-btn .moon-icon {
+  display: none;
+}
+body.light-mode .modal-entry-info {
+  background: rgba(0,0,0,.04);
+}
+body.light-mode .release-content h3 {
+  background: rgba(66,133,244,.08);
+}
+body.light-mode .release-content code {
+  color: #ad2bf2;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ── Toolbar (Search & Filter) ────────────────────────── */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+  animation: fadeIn .3s ease;
+}
+
+/* Search Input */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search-wrapper input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 12px 16px 12px 42px;
+  font-family: var(--font-sans);
+  font-size: 0.925rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+.search-wrapper input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(66,133,244,.15);
+}
+
+/* Category Filter Pills */
+.filter-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+.filter-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Chrome/Safari/Edge */
+}
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+}
+.filter-pill:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+.filter-pill.active {
+  background: rgba(66, 133, 244, 0.1);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+.filter-pill .count {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+body.light-mode .filter-pill .count {
+  background: rgba(0, 0, 0, 0.05);
+}
+body.light-mode .filter-pill.active {
+  background: rgba(66, 133, 244, 0.08);
+}
+
+/* ── Pagination (Load More Button) ──────────────────── */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  animation: fadeIn .3s ease;
+}
+.load-more-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+.load-more-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+.load-more-btn:active {
+  transform: translateY(0);
+}
 
 /* ── Animations ────────────────────────────────────── */
 @keyframes fadeIn {

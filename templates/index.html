@@ -11,6 +11,13 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+      }
+    })();
+  </script>
   <!-- ===== HEADER ===== -->
   <header class="site-header">
     <div class="header-inner">
@@ -40,6 +47,30 @@
 
       <div class="header-actions">
         <span id="fetch-timestamp" class="fetch-timestamp" aria-live="polite"></span>
+        <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button id="export-btn" class="export-btn" onclick="exportToCSV()" aria-label="Export release notes to CSV" disabled>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export CSV</span>
+        </button>
         <button id="refresh-btn" class="refresh-btn" onclick="fetchNotes()" aria-label="Refresh release notes">
           <svg id="refresh-icon" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
@@ -57,6 +88,18 @@
 
   <!-- ===== MAIN ===== -->
   <main class="main-content" id="main-content">
+
+    <!-- Toolbar (Search + Category Filter) -->
+    <div id="toolbar" class="toolbar hidden">
+      <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search release notes..." aria-label="Search release notes" oninput="handleSearchInput()" />
+      </div>
+      <div id="filter-container" class="filter-container" role="group" aria-label="Filter by category"></div>
+    </div>
 
     <!-- Stats bar -->
     <div id="stats-bar" class="stats-bar hidden">
@@ -84,6 +127,11 @@
 
     <!-- Release notes list -->
     <div id="notes-container" class="notes-container" role="feed" aria-label="Release notes"></div>
+
+    <!-- Load More container -->
+    <div id="load-more-container" class="load-more-container hidden">
+      <button id="load-more-btn" class="load-more-btn" onclick="loadMore()" aria-label="Load older release notes">Load More</button>
+    </div>
 
     <!-- Empty state -->
     <div id="empty-state" class="empty-state hidden">
