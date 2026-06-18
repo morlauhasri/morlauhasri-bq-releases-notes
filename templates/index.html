@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BigQuery Release Notes</title>
+  <meta name="description" content="Stay up to date with the latest BigQuery release notes fetched live from Google Cloud." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="url(#grad1)"/>
+            <path d="M2 17l10 5 10-5" stroke="url(#grad2)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 12l10 5 10-5" stroke="url(#grad2)" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="grad1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#4285F4"/>
+                <stop offset="1" stop-color="#34A853"/>
+              </linearGradient>
+              <linearGradient id="grad2" x1="2" y1="12" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FBBC05"/>
+                <stop offset="1" stop-color="#EA4335"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">BigQuery Release Notes</h1>
+          <p class="brand-subtitle">Live feed from Google Cloud</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="fetch-timestamp" class="fetch-timestamp" aria-live="polite"></span>
+        <button id="refresh-btn" class="refresh-btn" onclick="fetchNotes()" aria-label="Refresh release notes">
+          <svg id="refresh-icon" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <svg id="spinner-icon" class="btn-icon spinner hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+          </svg>
+          <span id="refresh-label">Refresh</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main-content" id="main-content">
+
+    <!-- Stats bar -->
+    <div id="stats-bar" class="stats-bar hidden">
+      <span id="entry-count" class="stat-pill"></span>
+      <span id="last-updated" class="stat-pill"></span>
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-banner" class="error-banner hidden" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-icon">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span id="error-message"></span>
+    </div>
+
+    <!-- Skeleton / Loading state -->
+    <div id="skeleton-container" class="skeleton-container hidden" aria-hidden="true">
+      <div class="skeleton-card"><div class="sk-title"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+      <div class="skeleton-card"><div class="sk-title"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+      <div class="skeleton-card"><div class="sk-title"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+      <div class="skeleton-card"><div class="sk-title"></div><div class="sk-line"></div><div class="sk-line short"></div></div>
+    </div>
+
+    <!-- Release notes list -->
+    <div id="notes-container" class="notes-container" role="feed" aria-label="Release notes"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state hidden">
+      <div class="empty-icon">📋</div>
+      <p>No release notes found.</p>
+    </div>
+
+  </main>
+
+  <!-- ===== TWEET MODAL ===== -->
+  <div id="tweet-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="x-logo" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+          </svg>
+        </div>
+        <h2 id="modal-title" class="modal-title">Share on X (Twitter)</h2>
+      </div>
+      <label class="modal-label" for="tweet-textarea">Edit your tweet</label>
+      <div class="textarea-wrap">
+        <textarea id="tweet-textarea" class="tweet-textarea" maxlength="280" rows="5" aria-describedby="char-counter"></textarea>
+        <span id="char-counter" class="char-counter">0 / 280</span>
+      </div>
+      <div class="modal-entry-info">
+        <strong id="modal-entry-title"></strong>
+        <a id="modal-entry-link" href="#" target="_blank" rel="noopener noreferrer" class="modal-entry-link">View on Google Cloud ↗</a>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-tweet" id="tweet-btn" onclick="openTweet()">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="x-logo-sm" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+          </svg>
+          Post to X
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
